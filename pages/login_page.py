@@ -1,38 +1,17 @@
 from selenium.webdriver.common.by import By
 from .base_page import BasePage
 
-
 class LoginPage(BasePage):
-    EMAIL = (
-        By.CSS_SELECTOR,
-        'input[type="email"], input[name="email"], input[name="LOGIN"]'
-    )
-    PASSWORD = (
-        By.CSS_SELECTOR,
-        'input[type="password"], input[name="password"], input[name="PASSWORD"]'
-    )
-    SUBMIT = (
-        By.CSS_SELECTOR,
-        'button[type="submit"], button.auth-button'
-    )
-    USER_INDICATOR = (
-        By.CSS_SELECTOR,
-        '.user-name, .header-user__name'
-    )
+    LOGIN_URL = "https://www.chitai-gorod.ru/login"
 
-    def open_login(self):
-        self.open('/auth/')
+    EMAIL_INPUT = (By.NAME, "email")
+    PASSWORD_INPUT = (By.NAME, "password")
+    LOGIN_BUTTON = (By.XPATH, "//button[contains(@class, 'button--full')]")
 
-    def login(self, email: str, password: str):
-        self.wait_visible(self.EMAIL).clear()
-        self.wait_visible(self.EMAIL).send_keys(email)
-        self.wait_visible(self.PASSWORD).clear()
-        self.wait_visible(self.PASSWORD).send_keys(password)
-        self.wait_clickable(self.SUBMIT).click()
+    def open(self):
+        self.driver.get(self.LOGIN_URL)
 
-    def is_logged_in(self) -> bool:
-        try:
-            self.wait_visible(self.USER_INDICATOR, timeout=5)
-            return True
-        except Exception:
-            return False
+    def login(self, email, password):
+        self.send_keys(self.EMAIL_INPUT, email)
+        self.send_keys(self.PASSWORD_INPUT, password)
+        self.click(self.LOGIN_BUTTON)
